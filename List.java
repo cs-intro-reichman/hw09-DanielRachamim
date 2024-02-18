@@ -1,10 +1,3 @@
-/** A linked list of character data objects.
- *  (Actually, a list of Node objects, each holding a reference to a character data object.
- *  However, users of this class are not aware of the Node objects. As far as they are concerned,
- *  the class represents a list of CharData objects. Likwise, the API of the class does not
- *  mention the existence of the Node objects). */
-import java.util.NoSuchElementException;
-
 public class List {
     // Points to the first node in this list
     private Node first;
@@ -26,15 +19,14 @@ public class List {
     /** Returns the first element in the list */
     public char getFirst() {
         if (first != null)
-            return first.character;
+            return first.cp.chr;
         else
-            throw new NoSuchElementException("List is empty");
+            throw new RuntimeException("List is empty");
     }
 
     /** Adds a CharData object with the given character to the beginning of this list. */
     public void addFirst(char chr) {
-        Node newNode = new Node(chr);
-        newNode.next = first;
+        Node newNode = new Node(new CharData(chr), first);
         first = newNode;
         size++;
     }
@@ -44,7 +36,7 @@ public class List {
         StringBuilder sb = new StringBuilder();
         Node current = first;
         while (current != null) {
-            sb.append(current.character).append(" ");
+            sb.append(current.cp).append(" ");
             current = current.next;
         }
         return sb.toString();
@@ -57,7 +49,7 @@ public class List {
         Node current = first;
         int index = 0;
         while (current != null) {
-            if (current.character == chr)
+            if (current.cp.chr == chr)
                 return index;
             current = current.next;
             index++;
@@ -76,7 +68,7 @@ public class List {
                 current = current.next;
             }
             // increment the counter directly on Node
-            current.count++;
+            current.cp.count++;
         } else {
             addFirst(chr);
         }
@@ -89,7 +81,7 @@ public class List {
         Node current = first;
         Node prev = null;
         while (current != null) {
-            if (current.character == chr) {
+            if (current.cp.chr == chr) {
                 if (prev != null)
                     prev.next = current.next;
                 else
@@ -106,7 +98,7 @@ public class List {
     /** Returns the CharData object at the specified index in this list.
      *  If the index is negative or is greater than the size of this list,
      *  throws an IndexOutOfBoundsException. */
-    public char get(int index) {
+    public CharData get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
@@ -114,16 +106,16 @@ public class List {
         for (int i = 0; i < index; i++) {
             current = current.next;
         }
-        return current.character;
+        return current.cp;
     }
 
     /** Returns an array of CharData objects, containing all the CharData objects in this list. */
-    public char[] toArray() {
-        char[] arr = new char[size];
+    public CharData[] toArray() {
+        CharData[] arr = new CharData[size];
         Node current = first;
         int i = 0;
         while (current != null) {
-            arr[i++] = current.character;
+            arr[i++] = current.cp;
             current = current.next;
         }
         return arr;
@@ -141,7 +133,7 @@ public class List {
         }
         int i = 0;
         while (current != null) {
-            iterator[i++] = current.character;
+            iterator[i++] = current.cp.chr;
             current = current.next;
         }
         return iterator;
@@ -149,14 +141,12 @@ public class List {
 
     /** Inner class representing a node in the list. */
     private static class Node {
-        char character;
+        CharData cp;
         Node next;
-        int count; // counter for frequency of character
 
-        Node(char character) {
-            this.character = character;
-            this.next = null;
-            this.count = 1; // initialize count to 1
+        Node(CharData cp, Node next) {
+            this.cp = cp;
+            this.next = next;
         }
     }
 }
