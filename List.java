@@ -3,6 +3,8 @@
  *  However, users of this class are not aware of the Node objects. As far as they are concerned,
  *  the class represents a list of CharData objects. Likwise, the API of the class does not
  *  mention the existence of the Node objects). */
+import java.util.NoSuchElementException;
+
 public class List {
     // Points to the first node in this list
     private Node first;
@@ -73,6 +75,7 @@ public class List {
             for (int i = 0; i < index; i++) {
                 current = current.next;
             }
+            // increment the counter directly on Node
             current.count++;
         } else {
             addFirst(chr);
@@ -147,12 +150,13 @@ public class List {
     /** Inner class representing a node in the list. */
     private static class Node {
         char character;
-        public int count;
         Node next;
+        int count; // counter for frequency of character
 
         Node(char character) {
             this.character = character;
             this.next = null;
+            this.count = 1; // initialize count to 1
         }
     }
 }
